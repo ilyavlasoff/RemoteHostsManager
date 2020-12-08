@@ -23,9 +23,32 @@
       <height>401</height>
      </rect>
     </property>
+    <property name="columnCount">
+     <number>5</number>
+    </property>
     <column>
      <property name="text">
-      <string notr="true">1</string>
+      <string notr="true">Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Rights</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Created</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Owner</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Creator</string>
      </property>
     </column>
    </widget>

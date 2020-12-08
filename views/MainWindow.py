@@ -19,8 +19,9 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.catalogTreeWidget = QtWidgets.QTreeWidget(self.centralwidget)
         self.catalogTreeWidget.setGeometry(QtCore.QRect(10, 170, 451, 401))
+        self.catalogTreeWidget.setColumnCount(5)
         self.catalogTreeWidget.setObjectName("catalogTreeWidget")
-        self.catalogTreeWidget.headerItem().setText(0, "1")
+        self.catalogTreeWidget.headerItem().setText(0, "Name")
         self.partitionsListWidget = QtWidgets.QListWidget(self.centralwidget)
         self.partitionsListWidget.setGeometry(QtCore.QRect(10, 10, 451, 151))
         self.partitionsListWidget.setObjectName("partitionsListWidget")
@@ -60,6 +61,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Remote hosts disk management"))
+        self.catalogTreeWidget.headerItem().setText(1, _translate("MainWindow", "Rights"))
+        self.catalogTreeWidget.headerItem().setText(2, _translate("MainWindow", "Created"))
+        self.catalogTreeWidget.headerItem().setText(3, _translate("MainWindow", "Owner"))
+        self.catalogTreeWidget.headerItem().setText(4, _translate("MainWindow", "Creator"))
         self.menuHosts.setTitle(_translate("MainWindow", "Hosts"))
         self.menuConnection.setTitle(_translate("MainWindow", "Connection"))
         self.actionHost_list.setText(_translate("MainWindow", "Add a host"))

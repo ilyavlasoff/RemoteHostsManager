@@ -1,5 +1,6 @@
 from views.CustomListViewItem import CustomListViewItem
 from PyQt5 import QtWidgets
+import asyncio
 
 
 class DataViewController:
@@ -8,9 +9,18 @@ class DataViewController:
         self.__fs_view = fs_view
         self.__cmd_executor = cmd_executor
         self.initial_views_update()
-        self.__partition_view.currentItemChanged.connect(lambda: self.catalog_list_update())
-        self.__fs_view.itemExpanded.connect(self.catalog_list_update)
-        self.__fs_view.itemCollapsed.connect(self.clear_dir_list)
+
+        def partition_changed_update_callback():
+            asyncio.ensure_future(self.catalog_list_update())
+        self.__partition_view.currentItemChanged.connect(partition_changed_update_callback)
+
+        def catalog_list_update_callback(parent):
+            asyncio.ensure_future(self.catalog_list_update(parent))
+        self.__fs_view.itemExpanded.connect(catalog_list_update_callback)
+
+        def catalog_clear_list(parent):
+            asyncio.ensure_future(self.clear_dir_list(parent))
+        self.__fs_view.itemCollapsed.connect(catalog_clear_list)
 
     def get_executor(self):
         return self.__cmd_executor
@@ -41,6 +51,7 @@ class DataViewController:
             raise Exception('This partition is not mounted yet')
         return mount_point
 
+    @asyncio.coroutine
     def clear_dir_list(self, parent=None):
         if parent is None:
             for i in reversed(range(self.__fs_view.topLevelItemCount())):
@@ -51,7 +62,9 @@ class DataViewController:
                 for i in reversed(range(parent.childCount())):
                     parent.removeChild(parent.child(i))
                 parent.addChild(QtWidgets.QTreeWidgetItem(None, ['Loading...']))
+        yield
 
+    @asyncio.coroutine
     def catalog_list_update(self, parent=None):
         mount_point = self.get_current_mount_point()
         if parent is not None:
@@ -67,12 +80,13 @@ class DataViewController:
             full_dir_path = mount_point
         data = self.__cmd_executor.get_ls_command(full_dir_path).execute()
         for item in data:
-            widget = QtWidgets.QTreeWidgetItem(None, [item.name])
+            widget = QtWidgets.QTreeWidgetItem(None, [item.name, item.access_rights, item.created_at, item.owner, item.creator])
             if item.is_dir():
                 widget.addChild(QtWidgets.QTreeWidgetItem(None, ['Loading...']))
             if parent:
                 parent.addChild(widget)
             else:
                 self.__fs_view.addTopLevelItem(widget)
+        yield
 
 
