@@ -25,5 +25,8 @@ class LSCommand(Command):
         ls_data_objects = []
         for line in lines:
             data = line.split()
-            ls_data_objects.append(LSData(data[0], data[2], data[3], data[4], ','.join(data[5:7]), data[8]))
+            try:
+                ls_data_objects.append(LSData(data[0], data[2], data[3], data[4], ','.join(data[5:7]), data[8]))
+            except Exception:
+                pass
         return ls_data_objects

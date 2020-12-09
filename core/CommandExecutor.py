@@ -1,4 +1,4 @@
-from models.commands import LSCommand, DFCommand
+from models.commands import LSCommand, DFCommand, RMCommand, MVCommand
 
 
 class CommandExecutor:
@@ -12,3 +12,9 @@ class CommandExecutor:
 
     def get_df_command(self):
         return DFCommand.DFCommand(self.client)
+
+    def get_rm_command(self, remove_path):
+        return RMCommand.RMCommand(self.client, remove_path)
+
+    def get_mv_command(self, source, destination):
+        return MVCommand.MVCommand(self.client, source, destination)

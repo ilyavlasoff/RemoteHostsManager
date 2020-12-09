@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>610</height>
+    <width>932</width>
+    <height>637</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Remote hosts disk management</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTreeWidget" name="catalogTreeWidget">
+   <widget class="QTreeWidget" name="catalogTreeWidgetLeft">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
+      <y>190</y>
       <width>451</width>
       <height>401</height>
      </rect>
@@ -52,14 +52,88 @@
      </property>
     </column>
    </widget>
-   <widget class="QListWidget" name="partitionsListWidget">
+   <widget class="QListWidget" name="partitionsListWidgetLeft">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>451</width>
+      <height>151</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="partitionsListWidgetRight">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>30</y>
+      <width>451</width>
+      <height>151</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTreeWidget" name="catalogTreeWidgetRight">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>190</y>
+      <width>451</width>
+      <height>401</height>
+     </rect>
+    </property>
+    <property name="columnCount">
+     <number>5</number>
+    </property>
+    <column>
+     <property name="text">
+      <string notr="true">Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Rights</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Created</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Owner</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Creator</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QLabel" name="connectionInfoLabelLeft">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
       <width>451</width>
-      <height>151</height>
+      <height>17</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>Disconnected</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="connectionInfoLabelRight">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>10</y>
+      <width>451</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Disconnected</string>
     </property>
    </widget>
   </widget>
@@ -68,7 +142,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>472</width>
+     <width>932</width>
      <height>22</height>
     </rect>
    </property>
@@ -83,9 +157,8 @@
     <property name="title">
      <string>Connection</string>
     </property>
-    <addaction name="actionConnect_to"/>
-    <addaction name="actionDisconnect"/>
-    <addaction name="actionConnection_properties"/>
+    <addaction name="actionLeft_window_connection"/>
+    <addaction name="actionRight_window_connection"/>
    </widget>
    <addaction name="menuConnection"/>
    <addaction name="menuHosts"/>
@@ -103,17 +176,27 @@
   </action>
   <action name="actionConnect_to">
    <property name="text">
-    <string>Connect to...</string>
+    <string>Connect left</string>
    </property>
   </action>
-  <action name="actionDisconnect">
+  <action name="actionLeft_window_connection">
    <property name="text">
-    <string>Disconnect</string>
+    <string>Left window connection properties</string>
    </property>
   </action>
   <action name="actionConnection_properties">
    <property name="text">
     <string>Connection properties</string>
+   </property>
+  </action>
+  <action name="actionConnect_right">
+   <property name="text">
+    <string>Connect right</string>
+   </property>
+  </action>
+  <action name="actionRight_window_connection">
+   <property name="text">
+    <string>Right window connection properties</string>
    </property>
   </action>
  </widget>

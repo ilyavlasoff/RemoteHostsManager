@@ -17,7 +17,7 @@ class CustomListViewItem(QtWidgets.QWidget):
         self.setLayout(self.allQHBoxLayout)
         self.textUpQLabel.setText(text_up)
         self.textDownQLabel.setText(text_down)
-        self.iconQLabel.setPixmap(QtGui.QPixmap(icon_path))
+        self.iconQLabel.setPixmap(QtGui.QPixmap(icon_path).scaledToWidth(48).scaledToHeight(48))
 
     def set_text_up(self, text):
         self.textUpQLabel.setText(text)

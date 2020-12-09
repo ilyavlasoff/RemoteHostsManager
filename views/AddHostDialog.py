@@ -60,9 +60,9 @@ class Ui_AddHostDialog(object):
 
         ########## ONLY DEBUG
         self.portInput.setText('22')
-        self.usernameInput.setText('root')
-        self.hostInput.setText('192.168.1.1')
-        self.passwordInput.setText('nevermind')
+        self.usernameInput.setText('user')
+        self.hostInput.setText('192.168.43.160')
+        self.passwordInput.setText('1')
         ########## ONLY DEBUG
 
     def retranslateUi(self, AddHostDialog):

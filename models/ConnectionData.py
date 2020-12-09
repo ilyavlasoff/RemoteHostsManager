@@ -1,9 +1,10 @@
 class ConnectionData:
-    def __init__(self, host=None, username=None, password=None, port=22):
+    def __init__(self, host=None, username=None, password=None, port=22, id=None):
         self.__host = host
         self.__username = username
         self.__password = password
         self.__port = port
+        self.__id = id
 
     def set_host(self, host):
         self.__host = host
@@ -28,3 +29,12 @@ class ConnectionData:
 
     def get_port(self):
         return self.__port
+
+    def get_connection_string(self):
+        return '%s@%s' % (self.__username, self.__host)
+
+    def get_id(self):
+        return self.__id
+
+    def set_id(self, id):
+        self.__id = id

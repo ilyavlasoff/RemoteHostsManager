@@ -1,6 +1,8 @@
 from views.CustomListViewItem import CustomListViewItem
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui, QtCore
+from controllers.ChangeNameDialogController import ChangeNameDialogController
 import asyncio
+import os
 
 
 class DataViewController:
@@ -21,6 +23,8 @@ class DataViewController:
         def catalog_clear_list(parent):
             asyncio.ensure_future(self.clear_dir_list(parent))
         self.__fs_view.itemCollapsed.connect(catalog_clear_list)
+        self.__fs_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.__fs_view.customContextMenuRequested[QtCore.QPoint].connect(self.on_context_menu)
 
     def get_executor(self):
         return self.__cmd_executor
@@ -36,7 +40,8 @@ class DataViewController:
         df_cmd = self.__cmd_executor.get_df_command()
         df_data_list = df_cmd.execute()
         for item in df_data_list:
-            list_widget_data = CustomListViewItem(item.filesystem, item.mount_point, '../ui/media/partition_icon.png')
+            partition_image_path = os.path.abspath('ui/media/partition_icon.png')
+            list_widget_data = CustomListViewItem(item.filesystem, item.mount_point, partition_image_path)
             list_widget_item = QtWidgets.QListWidgetItem(self.__partition_view)
             list_widget_item.setSizeHint(list_widget_data.sizeHint())
             self.__partition_view.addItem(list_widget_item)
@@ -68,12 +73,7 @@ class DataViewController:
     def catalog_list_update(self, parent=None):
         mount_point = self.get_current_mount_point()
         if parent is not None:
-            current_dir = parent
-            prev_dirs = [parent.text(0)]
-            while current_dir.parent():
-                current_dir = current_dir.parent()
-                prev_dirs.append(current_dir.text(0))
-            full_dir_path = mount_point + '/' + '/'.join(reversed(prev_dirs))
+            full_dir_path = self.get_full_path(parent)
             for i in reversed(range(parent.childCount())):
                 parent.removeChild(parent.child(i))
         else:
@@ -89,4 +89,64 @@ class DataViewController:
                 self.__fs_view.addTopLevelItem(widget)
         yield
 
+    def get_full_path(self, item):
+        current_dir = item
+        prev_dirs = [item.text(0)]
+        while current_dir.parent():
+            current_dir = current_dir.parent()
+            prev_dirs.append(current_dir.text(0))
+        mount_point = self.get_current_mount_point()
+        return mount_point + ('/' if mount_point[-1] != '/' else '') + '/'.join(reversed(prev_dirs))
+
+    def on_context_menu(self):
+        right_click_menu = QtWidgets.QMenu(self.__fs_view)
+
+        rename_action = QtWidgets.QAction('Rename', self.__fs_view)
+        rename_action.triggered.connect(self.rename_item)
+        right_click_menu.addAction(rename_action)
+
+        rename_action = QtWidgets.QAction('Copy', self.__fs_view)
+        rename_action.triggered.connect(self.move_item)
+        right_click_menu.addAction(rename_action)
+
+        rename_action = QtWidgets.QAction('Move', self.__fs_view)
+        rename_action.triggered.connect(self.copy_item)
+        right_click_menu.addAction(rename_action)
+
+        remove_action = QtWidgets.QAction('Delete', self.__fs_view)
+        remove_action.triggered.connect(self.delete_item)
+        right_click_menu.addAction(remove_action)
+
+        right_click_menu.exec_(QtGui.QCursor.pos())
+
+    def delete_item(self, obj):
+        if QtWidgets.QMessageBox.question(self.__fs_view, 'Delete', 'This file will be removed permanently. Continue?',
+                                       QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.Yes:
+            current_item = self.__fs_view.currentItem()
+            full_path = self.get_full_path(current_item)
+            self.__cmd_executor.get_rm_command(full_path).execute()
+
+    def rename_item(self):
+        rename_dialog = ChangeNameDialogController()
+        rename_dialog.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        if rename_dialog.exec_() == QtWidgets.QDialog.Accepted:
+            new_file_name = rename_dialog.get_filename()
+            current_item = self.__fs_view.currentItem()
+            old_full_path = self.get_full_path(current_item)
+            new_full_path = old_full_path[:str.rfind(old_full_path, '/')] + '/' + new_file_name
+            self.__cmd_executor.get_mv_command(old_full_path, new_full_path).execute()
+
+    def move_item(self):
+        current_item = self.__fs_view.currentItem()
+        full_path = self.get_full_path(current_item)
+
+
+    def copy_item(self):
+        pass
+
+    def import_to_buffer(self):
+        pass
+
+    def export_from_buffer(self):
+        pass
 

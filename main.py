@@ -12,4 +12,3 @@ with loop:
     application.show()
     loop.run_forever()
     sys.exit(loop.stop())
-#sys.exit(qapp.exec())

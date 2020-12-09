@@ -12,12 +12,12 @@ class DFCommand(Command):
 
     def execute(self):
         data = super(DFCommand, self).execute()
-        if 1:#try:
+        try:
             df_data = DFCommand.__parse(data)
             if len(df_data) > 0:
                 return df_data[1:]
-        #except Exception:
-        #    raise Exception('Error while parsing command')
+        except Exception:
+            raise Exception('Error while parsing command')
 
     @staticmethod
     def __parse(data):

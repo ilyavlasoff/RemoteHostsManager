@@ -5,10 +5,16 @@ import re
 
 
 class AddHostDialogController(QtWidgets.QDialog):
-    def __init__(self):
+    def __init__(self, old_host=None):
         super(AddHostDialogController, self).__init__()
         self.ui = AddHostDialog.Ui_AddHostDialog()
         self.ui.setupUi(self)
+
+        if old_host is not None:
+            self.ui.hostInput.setText(old_host.get_host())
+            self.ui.usernameInput.setText(old_host.get_username())
+            self.ui.passwordInput.setText(old_host.get_password())
+            self.ui.portInput.setText(str(old_host.get_port()))
 
         self.ui.buttonBox.accepted.connect(self.create_connection)
         self.connection = None
