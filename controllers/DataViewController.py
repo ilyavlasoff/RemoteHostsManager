@@ -104,13 +104,13 @@ class DataViewController:
         rename_action.triggered.connect(self.rename_item)
         right_click_menu.addAction(rename_action)
 
-        rename_action = QtWidgets.QAction('Copy', self.__fs_view)
-        rename_action.triggered.connect(self.move_item)
-        right_click_menu.addAction(rename_action)
+        copy_action = QtWidgets.QAction('Copy', self.__fs_view)
+        copy_action.triggered.connect(self.copy_item)
+        right_click_menu.addAction(copy_action)
 
-        rename_action = QtWidgets.QAction('Move', self.__fs_view)
-        rename_action.triggered.connect(self.copy_item)
-        right_click_menu.addAction(rename_action)
+        move_action = QtWidgets.QAction('Move', self.__fs_view)
+        move_action.triggered.connect(self.move_item)
+        right_click_menu.addAction(move_action)
 
         remove_action = QtWidgets.QAction('Delete', self.__fs_view)
         remove_action.triggered.connect(self.delete_item)
@@ -124,6 +124,7 @@ class DataViewController:
             current_item = self.__fs_view.currentItem()
             full_path = self.get_full_path(current_item)
             self.__cmd_executor.get_rm_command(full_path).execute()
+            asyncio.ensure_future(self.catalog_list_update(current_item.parent()))
 
     def rename_item(self):
         rename_dialog = ChangeNameDialogController()
@@ -134,11 +135,11 @@ class DataViewController:
             old_full_path = self.get_full_path(current_item)
             new_full_path = old_full_path[:str.rfind(old_full_path, '/')] + '/' + new_file_name
             self.__cmd_executor.get_mv_command(old_full_path, new_full_path).execute()
+            asyncio.ensure_future(self.catalog_list_update(current_item.parent()))
 
     def move_item(self):
         current_item = self.__fs_view.currentItem()
         full_path = self.get_full_path(current_item)
-
 
     def copy_item(self):
         pass
