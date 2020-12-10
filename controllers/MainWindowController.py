@@ -46,11 +46,11 @@ class MainWindowController(QtWidgets.QMainWindow):
 
     def set_right_side_view_connection_properties(self):
         command_executor = self.manage_connection_properties(self.right_side_view_group.manager_key)
-        self.connect_to_host(command_executor, self.right_side_view_group)
+        self.connect_to_host(command_executor, self.right_side_view_group, self.left_side_view_group)
 
     def set_left_side_view_connection_properties(self):
         command_executor = self.manage_connection_properties(self.left_side_view_group.manager_key)
-        self.connect_to_host(command_executor, self.left_side_view_group)
+        self.connect_to_host(command_executor, self.left_side_view_group, self.right_side_view_group)
 
     def manage_saved_hosts(self):
         saved_hosts_manager = SavedHostsListDialogController()
@@ -64,11 +64,12 @@ class MainWindowController(QtWidgets.QMainWindow):
         if connection_properties_dialog.exec_() == QtWidgets.QDialog.Accepted:
             return connection_properties_dialog.get_connection_executor()
 
-    def connect_to_host(self, command_executor, view_group):
+    def connect_to_host(self, command_executor, view_group, neighbor):
         if view_group.management_data_view is None:
             view_group.management_data_view = DataViewController(command_executor,
                                                       view_group.partition_widget,
-                                                      view_group.catalog_widget)
+                                                      view_group.catalog_widget,
+                                                      neighbor)
         else:
             view_group.management_data_view.set_executor(command_executor)
 

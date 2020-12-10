@@ -1,4 +1,4 @@
-from models.commands import LSCommand, DFCommand, RMCommand, MVCommand
+from models.commands import LSCommand, DFCommand, RMCommand, MVCommand, ImportCommand, ExportCommand
 
 
 class CommandExecutor:
@@ -18,3 +18,9 @@ class CommandExecutor:
 
     def get_mv_command(self, source, destination):
         return MVCommand.MVCommand(self.client, source, destination)
+
+    def get_import_command(self, remote_path, local_path, del_remote):
+        return ImportCommand.ImportCommand(self.client, remote_path, local_path, del_remote)
+
+    def get_export_command(self, local_path, remote_path):
+        return ExportCommand.ExportCommand(self.client, local_path, remote_path)
