@@ -1,7 +1,7 @@
 class Command:
     def __init__(self, ssh_client, command_text, command_args, params):
         self.command_args = ' '.join(command_args)
-        self.params = ' '.join(['-%s' % param for param in params])
+        self.params = ' '.join(['-%s' % param if len(param) == 1 else '--%s' % param for param in params])
         self.client = ssh_client
         self.command_text = command_text
 

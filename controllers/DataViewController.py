@@ -59,9 +59,7 @@ class DataViewController:
     @asyncio.coroutine
     def clear_dir_list(self, parent=None):
         if parent is None:
-            for i in reversed(range(self.__fs_view.topLevelItemCount())):
-                item = self.__fs_view.takeTopLevelItem(i)
-                del item
+            self.__fs_view.clear()
         else:
             if parent.childCount() > 2 or any(parent.child(i).childCount() > 1 for i in range(parent.childCount())):
                 for i in reversed(range(parent.childCount())):
@@ -77,6 +75,7 @@ class DataViewController:
             for i in reversed(range(parent.childCount())):
                 parent.removeChild(parent.child(i))
         else:
+            yield from self.clear_dir_list(parent)
             full_dir_path = mount_point
         data = self.__cmd_executor.get_ls_command(full_dir_path).execute()
         for item in data:
