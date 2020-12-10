@@ -28,7 +28,7 @@ class MainWindowController(QtWidgets.QMainWindow):
         if left_connection_info is None:
             self.set_left_side_view_connection_properties()
         if right_connection_info is not None:
-            self.connect_to_host(right_connection_info, self.right_side_view_group)
+            self.connect_to_host(right_connection_info, self.right_side_view_group, self.left_side_view_group)
 
     def load_state(self):
         return SaverDataService.SaverDataService.load_state()
@@ -45,12 +45,18 @@ class MainWindowController(QtWidgets.QMainWindow):
         self.ui.actionSaved_hosts.triggered.connect(self.manage_saved_hosts)
 
     def set_right_side_view_connection_properties(self):
-        command_executor = self.manage_connection_properties(self.right_side_view_group.manager_key)
-        self.connect_to_host(command_executor, self.right_side_view_group, self.left_side_view_group)
+        try:
+            command_executor = self.manage_connection_properties(self.right_side_view_group.manager_key)
+            self.connect_to_host(command_executor, self.right_side_view_group, self.left_side_view_group)
+        except Exception:
+            QtWidgets.QMessageBox.critical(self, 'Error', 'Error while connection to a specified host')
 
     def set_left_side_view_connection_properties(self):
-        command_executor = self.manage_connection_properties(self.left_side_view_group.manager_key)
-        self.connect_to_host(command_executor, self.left_side_view_group, self.right_side_view_group)
+        try:
+            command_executor = self.manage_connection_properties(self.left_side_view_group.manager_key)
+            self.connect_to_host(command_executor, self.left_side_view_group, self.right_side_view_group)
+        except Exception:
+            QtWidgets.QMessageBox.critical(self, 'Error', 'Error while connection to a specified host')
 
     def manage_saved_hosts(self):
         saved_hosts_manager = SavedHostsListDialogController()
@@ -65,13 +71,13 @@ class MainWindowController(QtWidgets.QMainWindow):
             return connection_properties_dialog.get_connection_executor()
 
     def connect_to_host(self, command_executor, view_group, neighbor):
-        if view_group.management_data_view is None:
+        try:
             view_group.management_data_view = DataViewController(command_executor,
-                                                      view_group.partition_widget,
-                                                      view_group.catalog_widget,
-                                                      neighbor)
-        else:
-            view_group.management_data_view.set_executor(command_executor)
+                                                                 view_group.partition_widget,
+                                                                 view_group.catalog_widget,
+                                                                 neighbor)
+        except Exception:
+            QtWidgets.QMessageBox.critical(self, 'Error', 'Can not connect to host')
 
     def create_command_executor(self, key, connection_data):
         return ConnectionManager.add_connection(key, connection_data).connect()
